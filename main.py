@@ -59,7 +59,7 @@ st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
 # Function for generating LLaMA2 response
 def generate_llama2_response(prompt_input):
 
-    text = '''Chame-me de "Rian". 
+    text = '''
 - Sempre forneça respostas técnicas, a menos que instruído de outra forma. 
 - Sempre responda em Português (pt-br),  a menos que seja instruído de outra forma.
 - Mantenha explicações detalhadas, a menos que seja instruído a fornecer informações concisas . 
