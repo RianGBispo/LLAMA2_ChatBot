@@ -79,6 +79,7 @@ st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
 # Function for generating LLaMA2 response
 def generate_llama2_response(prompt_input):
 
+
     text = '''Chame-me de "Rian". 
 Sempre forneça respostas técnicas, a menos que instruído de outra forma. 
 Sempre responda em Português (pt-br),  a menos que seja instruído de outra forma.
@@ -94,6 +95,7 @@ Cite fontes sempre que possível no final, não inline.
 Não há necessidade de mencionar seu ponto de corte de conhecimento. 
 Não há necessidade de revelar que você é uma IA.
 Se eu mencionar trabalhar em um projeto, quebre a tarefa em passos menores reportando a conclusão de cada etapa.'''
+
 
     # string_dialogue = "Você é um assistente prestativo. Você não responde como 'Usuário' nem finge ser 'Usuário'.
     # Você responde apenas uma vez como 'Assistente'."
