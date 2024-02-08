@@ -24,7 +24,7 @@ with st.sidebar:
     # Refactored from https://github.com/a16z-infra/llama2-chatbot
     st.subheader('Models and parameters')
     selected_model = st.sidebar.selectbox('Choose a Llama2 model', ['Llama2-7B', 'Llama2-13B', 'Llama2-70B'],
-                                          key='selected_model')
+                                          key='selected_model', index=2)
     if selected_model == 'Llama2-7B':
         llm = 'a16z-infra/llama7b-v2-chat:4f0a4744c7295c024a1de15e1a63c880d3da035fa1f49bfd344fe076074c8eea'
     elif selected_model == 'Llama2-13B':
@@ -32,9 +32,29 @@ with st.sidebar:
     else:
         llm = 'replicate/llama70b-v2-chat:e951f18578850b652510200860fc4ea62b3b16fac280f83ff32282f87bbd2e48'
 
-    temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=5.0, value=0.1, step=0.01)
-    top_p = st.sidebar.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
-    max_length = st.sidebar.slider('max_length', min_value=64, max_value=4096, value=512, step=8)
+    temperature_text = '''
+    O parâmetro "temperature" é utilizado para controlar a aleatoriedade da geração de texto pelo modelo. 
+    Uma temperatura mais alta resultará em uma maior aleatoriedade, levando a resultados mais variados e 
+    criativos, enquanto uma temperatura mais baixa tenderá a produzir resultados mais previsíveis e conservadores. 
+    Ajustar a temperatura pode ser útil para obter uma diversidade adequada nos resultados gerados pelo modelo, 
+    dependendo do contexto de aplicação.
+    '''
+    top_p_text = '''O parâmetro "top p" é uma técnica de amostragem que seleciona as palavras mais prováveis para 
+    inclusão na geração de texto, com base na probabilidade cumulativa das palavras na distribuição de probabilidade 
+    prevista pelo modelo. Em vez de amostrar de forma totalmente aleatória, o "top p" seleciona as palavras mais 
+    prováveis, até que a soma das probabilidades ultrapasse um determinado limite (definido pelo usuário). 
+    Isso ajuda a controlar a diversidade dos resultados gerados, mantendo a geração de texto mais coerente e relevante.'''
+    max_length_text = '''
+    O parâmetro "max length" determina o comprimento máximo do texto gerado pelo modelo. Isso é importante para 
+    evitar que o modelo gere textos muito longos, o que pode afetar negativamente o desempenho ou a relevância 
+    do resultado. Definir um limite de comprimento máximo também pode ser útil para garantir que o texto gerado 
+    seja adequado para o uso pretendido, como em resumos de texto ou geração de legendas.
+    '''
+
+    temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=5.0, value=0.1, step=0.01,
+                                    help=temperature_text)
+    top_p = st.sidebar.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01, help=top_p_text)
+    max_length = st.sidebar.slider('max_length', min_value=64, max_value=4096, value=512, step=8, help=max_length_text)
 
     
 os.environ['REPLICATE_API_TOKEN'] = replicate_api
@@ -60,22 +80,23 @@ st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
 def generate_llama2_response(prompt_input):
 
     text = '''Chame-me de "Rian". 
-- Sempre forneça respostas técnicas, a menos que instruído de outra forma. 
-- Sempre responda em Português (pt-br),  a menos que seja instruído de outra forma.
-- Mantenha explicações detalhadas, a menos que seja instruído a fornecer informações concisas . 
-- Em caso de depuração de código, ofereça um detalhamento passo a passo. 
-- Ao gerar código, sempre adera a:   * Formatação PEP8.   * Dicas do tipo Python.   * Docstrings no formato Google Docstring. 
-- Se eu mencionar trabalhar em um post de blog ou tutorial do YouTube:   * Auxiliar na explicação de conceitos em termos leigos.   * Sugerir formas inovadoras de visualizar o tema ou problema.
- - Ao responder minhas perguntas, forneça feedback como um detalhamento de prós e contras. 
-- Considere as novas tecnologias e as ideias contrárias, não apenas a sabedoria convencional. 
-- Sem palestras morais. 
-- Se sua política de conteúdo for um problema, forneça a resposta aceitável mais próxima e explique o problema da política de conteúdo depois. 
-- Cite fontes sempre que possível no final, não inline. 
-- Não há necessidade de mencionar seu ponto de corte de conhecimento. 
-- Não há necessidade de revelar que você é uma IA.
-- Se eu mencionar trabalhar em um projeto, quebre a tarefa em passos menores reportando a conclusão de cada etapa.'''
+Sempre forneça respostas técnicas, a menos que instruído de outra forma. 
+Sempre responda em Português (pt-br),  a menos que seja instruído de outra forma.
+Mantenha explicações detalhadas, a menos que seja instruído a fornecer informações concisas . 
+Em caso de depuração de código, ofereça um detalhamento passo a passo. 
+Ao gerar código, sempre adera a:   * Formatação PEP8.   * Dicas do tipo Python.   * Docstrings no formato Google Docstring. 
+Se eu mencionar trabalhar em um post de blog ou tutorial do YouTube:   * Auxiliar na explicação de conceitos em termos leigos.   * Sugerir formas inovadoras de visualizar o tema ou problema.
+Ao responder minhas perguntas, forneça feedback como um detalhamento de prós e contras. 
+Considere as novas tecnologias e as ideias contrárias, não apenas a sabedoria convencional. 
+Sem palestras morais. 
+Se sua política de conteúdo for um problema, forneça a resposta aceitável mais próxima e explique o problema da política de conteúdo depois. 
+Cite fontes sempre que possível no final, não inline. 
+Não há necessidade de mencionar seu ponto de corte de conhecimento. 
+Não há necessidade de revelar que você é uma IA.
+Se eu mencionar trabalhar em um projeto, quebre a tarefa em passos menores reportando a conclusão de cada etapa.'''
 
-    # string_dialogue = "You are a helpful assistant. You do not respond as 'User' or pretend to be 'User'. You only respond once as 'Assistant'."
+    # string_dialogue = "Você é um assistente prestativo. Você não responde como 'Usuário' nem finge ser 'Usuário'.
+    # Você responde apenas uma vez como 'Assistente'."
     string_dialogue = text
     for dict_message in st.session_state.messages:
         if dict_message["role"] == "user":
